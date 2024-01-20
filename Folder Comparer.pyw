@@ -22,6 +22,7 @@ def are_files_equal(file1_path, file2_path):
             return content1 == content2
     except Exception as e:
         print(f"ERROR: {e}: {file1_path} {file2_path}")
+        text_area.insert(tk.END, f"ERROR: {e}: {file1_path} {file2_path}\n")
         return f"ERROR: Could not compare files' contents: {file1_path} {file2_path}"
 
 def add_files_to_list(array,path,basepath):
@@ -136,9 +137,36 @@ def search_in_text():
             if string in i or "Files which are only in" in i or "Following files' contents are not same" in i:
                 text_area.insert(tk.END, f"{i}\n")
 
+def save_to_file():
+    text_content = text_area.get("1.0", "end-1c")
+    file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+    if file_path:
+        with open(file_path, "w") as file:
+            file.write(text_content)
+
+def set_from_file():
+    file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
+    if file_path:
+        with open(file_path, "r") as file:
+            file_content = file.read()
+            text_area.delete("1.0", "end")
+            text_area.insert("1.0", file_content)
+
 root = tk.Tk()
 center_window(520, 400)
-root.title("Folder Selection")
+root.title("Folder Comparer")
+
+# Create a menu bar
+menu_bar = tk.Menu(root)
+root.config(menu=menu_bar)
+
+
+# Create a File menu
+file_menu = tk.Menu(menu_bar, tearoff=0)
+menu_bar.add_cascade(label="File", menu=file_menu)
+file_menu.add_command(label="Save to File", command=save_to_file)
+file_menu.add_command(label="Import Output", command=set_from_file)
+
 
 # For Buttons
 left_frame = tk.Frame(root)
@@ -171,7 +199,7 @@ filter_button.pack(side=tk.LEFT)
 
 # For Text Area
 textContainer = tk.Frame(root, borderwidth=1, relief="sunken")
-text_area = tk.Text(textContainer, width=24, height=13, wrap="none", borderwidth=0)
+text_area = tk.Text(textContainer, width=24, height=13, wrap="none", borderwidth=1)
 textVsb = tk.Scrollbar(textContainer, orient="vertical", command=text_area.yview)
 textHsb = tk.Scrollbar(textContainer, orient="horizontal", command=text_area.xview)
 text_area.configure(yscrollcommand=textVsb.set, xscrollcommand=textHsb.set)
