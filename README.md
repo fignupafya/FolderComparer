@@ -2,6 +2,9 @@
 
 This Python script (`Folder Comparer.pyw`) allows you to compare the contents of two folders and identify differences between them.
 
+![readme image](readme.png)
+![readme image2](readme2.png)
+
 ## Features
 
 - **Folder Comparison:** Compares the contents of two selected folders.
